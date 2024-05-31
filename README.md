@@ -15,16 +15,34 @@ Once you are on the Remix website, create a new file by clicking on the "+" icon
 
 -- solidity
 // SPDX-License-Identifier: MIT
+// Only contract owner should be able to mint tokens
+// Any user can transfer tokens
+// Any user can burn tokens
 pragma solidity ^0.8.13;
 
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v4.0.0/contracts/token/ERC20/ERC20.sol";
+import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/v4.0.0/contracts/access/Ownable.sol";
 
-contract Mytoken is ERC20 {
-    constructor() ERC20("MyToken","MTK") {
+contract MyToken is ERC20, Ownable {
+    constructor() ERC20("MyToken", "MTK") {
         _mint(msg.sender, 100 * 10**uint(decimals()));
     }
 
+    //mint tokens, only callable by the owner
+    function mint(address to, uint256 amount) public onlyOwner {
+        _mint(to, amount);
+    }
+
+    // to burn tokens
+    function burn(uint256 amount) public {
+        _burn(msg.sender, amount);
+    }
 }
+
+// Accounts
+// Owner > 0x5B38Da6a701c568545dCfcB03FcB875f56beddC4
+// User > 0xAb8483F64d9C6d1EcF9b849Ae677dD3315835cb2
+// user > 0x4B20993Bc481177ec7E8f571ceCaE8A9e22C02db
 
 --end
 
